@@ -7,5 +7,4 @@ analyzes market-moving news, and sends Telegram alerts with directional bias.
 ✅ Phase 0 — Repository & environment setup  
 ✅ Phase 1 — Telegram alert integration  
 ✅ Phase 2 — Autonomous agent runner & scheduler  
-🚧 Phase 3 — Instrument tracking & agent memory
-
+✅ Phase 3 — Instrument tracking & agent memory

@@ -1,0 +1,27 @@
+# Instruments tracked by Ticker Pulse
+
+BTC:
+  type: crypto
+  name: Bitcoin
+  keywords:
+    - Bitcoin
+    - BTC
+    - crypto market
+    - digital asset
+
+AAPL:
+  type: stock
+  name: Apple Inc
+  keywords:
+    - Apple
+    - AAPL
+    - iPhone
+    - Nasdaq
+USDJPY:
+  type: forex
+  name: US Dollar / Japanese Yen
+  keywords:
+    - USDJPY
+    - forex market
+    - currency pair
+    - foreign exchange

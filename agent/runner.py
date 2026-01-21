@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
+from agent.state import load_instruments
 from alerts.telegram_bot import send_message
 from agent.scheduler import sleep_minutes
 
@@ -12,10 +12,17 @@ load_dotenv(BASE_DIR / ".env")
 CHECK_INTERVAL_MINUTES = float(os.getenv("CHECK_INTERVAL_MINUTES", 15))
 
 def run_agent():
-    send_message("🟢 Ticker Pulse started — agent is online")
+    instruments = load_instruments()
+    instrument_list = ", ".join(instruments.keys())
+
+    send_message(
+    f"🟢 Ticker Pulse started\n"
+    f"📡 Tracking instruments: {instrument_list}")
+
 
     while True:
         try:
+            print(f"Tracking {len(instruments)} instruments")
             # Heartbeat (proves the agent is alive)
             send_message("⏱️ Ticker Pulse heartbeat — agent running")
 
