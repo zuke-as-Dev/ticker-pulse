@@ -27,7 +27,7 @@ def run_agent():
     f"🟢 Ticker Pulse started\n"
     f"📡 Tracking instruments: {instrument_list}")
 
-    clear_memory()
+    #clear_memory()
 
     while True:
         try:

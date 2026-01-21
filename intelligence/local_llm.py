@@ -8,7 +8,7 @@ OLLAMA_PATH = Path.home() / "AppData" / "Local" / "Programs" / "Ollama" / "ollam
 
 def run_llm(prompt: str, model: str = "qwen2.5:7b", timeout: int = 120) -> str:
     """
-    Runs a local LLM via Ollama (Windows-safe, non-interactive).
+    Runs a local LLM via Ollama (Windows-safe, UTF-8 safe).
     """
     try:
         start = time.time()
@@ -17,6 +17,8 @@ def run_llm(prompt: str, model: str = "qwen2.5:7b", timeout: int = 120) -> str:
             [str(OLLAMA_PATH), "run", model, prompt],
             capture_output=True,
             text=True,
+            encoding="utf-8",      # 🔑 FORCE UTF-8
+            errors="ignore",       # 🔑 DROP undecodable chars
             timeout=timeout
         )
 
