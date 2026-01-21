@@ -1,0 +1,16 @@
+# RSS feeds monitored by Ticker Pulse
+
+general:
+  - name: Reuters Business
+    url: https://feeds.reuters.com/reuters/businessNews
+
+  - name: Yahoo Finance
+    url: https://finance.yahoo.com/news/rssindex
+
+crypto:
+  - name: CoinDesk
+    url: https://www.coindesk.com/arc/outboundfeeds/rss/
+
+macro:
+  - name: Federal Reserve
+    url: https://www.federalreserve.gov/feeds/press_all.xml

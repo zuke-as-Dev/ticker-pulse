@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from agent.state import load_instruments
 from alerts.telegram_bot import send_message
 from agent.scheduler import sleep_minutes
+from ingestion.rss_fetcher import fetch_articles
+from ingestion.parser import normalize_articles
 
 # Load .env explicitly from project root
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +24,17 @@ def run_agent():
 
     while True:
         try:
+            # Debug: confirm tracked instruments
             print(f"Tracking {len(instruments)} instruments")
+
             # Heartbeat (proves the agent is alive)
             send_message("⏱️ Ticker Pulse heartbeat — agent running")
 
+             # ---- News ingestion ----
+            raw_articles = fetch_articles()
+            articles = normalize_articles(raw_articles)
+
+            print(f"Fetched {len(articles)} articles")
             # ---- Future logic plugs in here ----
             # fetch_news()
             # analyze_news()
