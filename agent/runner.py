@@ -6,6 +6,8 @@ from alerts.telegram_bot import send_message
 from agent.scheduler import sleep_minutes
 from ingestion.rss_fetcher import fetch_articles
 from ingestion.parser import normalize_articles
+from intelligence.relevance import filter_relevant_articles
+from agent.memory import is_new_article
 
 # Load .env explicitly from project root
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,13 +35,17 @@ def run_agent():
              # ---- News ingestion ----
             raw_articles = fetch_articles()
             articles = normalize_articles(raw_articles)
+            raw_articles = fetch_articles()
+            articles = normalize_articles(raw_articles)
+            relevant = filter_relevant_articles(articles, instruments)
 
-            print(f"Fetched {len(articles)} articles")
-            # ---- Future logic plugs in here ----
-            # fetch_news()
-            # analyze_news()
-            # send_alerts()
-            # -----------------------------------
+            new_relevant = []
+
+            for item in relevant:
+                article = item["article"]
+                if is_new_article(article["title"], article["source"]):
+                    new_relevant.append(item)
+            print(f"Relevant new articles: {len(new_relevant)}")
 
         except Exception as e:
             send_message(f"⚠️ Ticker Pulse error: {e}")
