@@ -2,19 +2,32 @@ from intelligence.local_llm import run_llm
 
 
 def summarize_article(article: dict) -> str:
-    summary_text = article.get("summary") or "No summary provided."
+    summary_text = article["summary"] or "No summary provided."
 
     prompt = f"""
-You are a financial news analyst.
+You are a trading analyst.
+Respond in English only.
 
-Summarize the following news into 3–5 concise bullet points.
-Focus on facts and market impact. Avoid opinions.
+Based on the news below, classify the likely short-term market impact
+on the related instrument as ONE of:
+
+- Bullish
+- Bearish
+- Neutral
+- Unclear
+
+Then give ONE short reason.
+
+Respond in this exact format:
+Bias: <one word>
+Reason: <one sentence>
 
 TITLE:
-{article.get('title', '')}
+{article['title']}
 
 SUMMARY:
 {summary_text}
 """
 
     return run_llm(prompt)
+

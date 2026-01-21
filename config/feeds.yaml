@@ -14,3 +14,18 @@ crypto:
 macro:
   - name: Federal Reserve
     url: https://www.federalreserve.gov/feeds/press_all.xml
+
+
+india_markets:
+  - name: Economic Times Markets
+    url: https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms
+
+  - name: Moneycontrol Markets
+    url: https://www.moneycontrol.com/rss/marketreports.xml
+
+  - name: LiveMint Markets
+    url: https://www.livemint.com/rss/markets
+
+  - name: Business Standard Markets
+    url: https://www.business-standard.com/rss/markets-106.rss
+
