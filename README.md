@@ -10,4 +10,5 @@ analyzes market-moving news, and sends Telegram alerts with directional bias.
 ✅ Phase 2 — Autonomous agent runner & scheduler  
 ✅ Phase 3 — Instrument tracking & agent memory  
 ✅ Phase 4 — RSS news ingestion  
-🚧 Phase 5 — Relevance filtering & deduplication
+✅ Phase 5 — Relevance filtering & deduplication  
+✅ Phase 6 — Local AI summarization & directional bias

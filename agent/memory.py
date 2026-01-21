@@ -36,3 +36,13 @@ def is_new_article(title: str, source: str) -> bool:
     hashes.add(h)
     _save_memory(hashes)
     return True
+def clear_memory():
+    """
+    Clears all processed article memory.
+    Useful for testing.
+    """
+    if MEMORY_FILE.exists():
+        MEMORY_FILE.unlink()
+        print("[MEMORY] Cleared processed articles memory")
+    else:
+        print("[MEMORY] No memory file to clear")
