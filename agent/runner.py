@@ -62,14 +62,17 @@ def run_agent():
             for item in new_relevant:
                 article = item["article"]
 
+                print("[DEBUG] Calling LLM...")
+
                 summary = summarize_article(article)
-                bias = classify_bias(article)
+                bias, reason = classify_bias(article)
 
                 message = format_alert(
                     symbol=item["symbol"],
                     title=article["title"],
                     summary=summary,
                     bias=bias,
+                    reason=reason,
                     source=article["source"],
                     link=article["link"],
                 )

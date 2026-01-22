@@ -31,5 +31,5 @@ def fetch_articles() -> list:
                     "source": feed["name"],
                     "category": category,
                 })
-    # print(f"[RSS DEBUG] Total raw articles fetched: {len(articles)}")
+    print(f"[MAC RSS DEBUG] Total raw articles fetched: {len(articles)}")
     return articles
