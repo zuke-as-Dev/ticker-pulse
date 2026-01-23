@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 from pathlib import Path
 import sys
@@ -13,6 +16,8 @@ from intelligence.summarizer import summarize_article
 from intelligence.bias_classifier import classify_bias
 from agent.memory import clear_memory
 from alerts.formatter import format_alert
+import threading
+from alerts.telegram_bot import poll_messages
 
 # Load .env explicitly from project root
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,6 +26,7 @@ load_dotenv(BASE_DIR / ".env")
 CHECK_INTERVAL_MINUTES = float(os.getenv("CHECK_INTERVAL_MINUTES", 15))
 
 def run_agent():
+    threading.Thread(target=poll_messages, daemon=True).start()
     instruments = load_instruments()
     instrument_list = ", ".join(instruments.keys())
 

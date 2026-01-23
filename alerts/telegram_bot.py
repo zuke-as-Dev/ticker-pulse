@@ -1,39 +1,61 @@
 import os
+import time
 import requests
-from dotenv import load_dotenv
-from pathlib import Path
+from alerts.telegram_commands import handle_message
+from alerts.markdown import escape_md
 
-# Explicitly load .env from project root
-BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-
+API_URL = f"https://api.telegram.org/bot{TOKEN}"
 
 
 def send_message(text: str):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-
-    if not token or not chat_id:
+    if not TOKEN or not CHAT_ID:
         raise ValueError("Telegram credentials missing in .env file")
 
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-
     payload = {
-        "chat_id": chat_id,
-        "text": text,
+        "chat_id": CHAT_ID,
+        "text": escape_md(text),
         "parse_mode": "MarkdownV2",
         "disable_web_page_preview": True,
     }
 
-    response = requests.post(url, json=payload)
-    response.raise_for_status()
+    response = requests.post(f"{API_URL}/sendMessage", json=payload)
 
-    if response.status_code != 200:
-        raise RuntimeError(f"Telegram API error: {response.text}")
+    # Prevent thread crash
+    if not response.ok:
+        print("[TELEGRAM ERROR]", response.text)
 
-    return response.json()
+
+def poll_messages():
+    """
+    Long-poll Telegram for new messages and route commands.
+    """
+    offset = None
+
+    while True:
+        params = {"timeout": 30}
+        if offset:
+            params["offset"] = offset
+
+        response = requests.get(f"{API_URL}/getUpdates", params=params)
+        response.raise_for_status()
+
+        data = response.json()
+
+        for update in data.get("result", []):
+            offset = update["update_id"] + 1
+
+            message = update.get("message")
+            if not message:
+                continue
+
+            text = message.get("text")
+            if not text:
+                continue
+
+            # Route command text
+            handle_message(text.strip(), send_message)
+
+        time.sleep(1)
