@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-
+from intelligence.llm_config import LLM_MODEL, LLM_TEMPERATURE
 import os
 from pathlib import Path
 import sys
@@ -18,6 +18,13 @@ from agent.memory import clear_memory
 from alerts.formatter import format_alert
 import threading
 from alerts.telegram_bot import poll_messages
+
+# Debug: print LLM config on startup
+print("🧠 LLM CONFIG")
+print(f"Model       : {LLM_MODEL}")
+print(f"Temperature : {LLM_TEMPERATURE}")
+print("-" * 40)
+
 
 # Load .env explicitly from project root
 BASE_DIR = Path(__file__).resolve().parent.parent

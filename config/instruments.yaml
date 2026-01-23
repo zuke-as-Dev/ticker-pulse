@@ -13,3 +13,36 @@ RELIANCE:
     - energy
     - AI
     - digital
+XAUUSD:
+  type: commodity
+  name: Gold
+  primary_keywords:
+    - Gold
+    - XAUUSD
+    - precious metal
+  secondary_keywords:
+    - investment
+    - safe haven
+    - inflation hedge
+BTCUSD:
+  type: cryptocurrency
+  name: Bitcoin
+  primary_keywords:
+    - Bitcoin
+    - BTCUSD
+    - crypto
+  secondary_keywords:
+    - blockchain
+    - digital currency  
+
+HDFC:
+  type: stock
+  name: HDFC Bank
+  primary_keywords:
+    - HDFC
+    - HDFC Bank
+    - banking
+  secondary_keywords:
+    - finance
+    - loans
+    - credit cards
