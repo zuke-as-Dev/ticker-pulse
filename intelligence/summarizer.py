@@ -1,22 +1,39 @@
 from intelligence.local_llm import run_llm
 
 
-def summarize_article(article: dict) -> str:
+def summarize_article(article: dict) -> list[str]:
     summary_text = article.get("summary") or "No summary provided."
 
     prompt = f"""
-You are a financial news analyst.
-Respond in English only.
+You are a financial news summarizer.
 
-Summarize the news into 3–5 concise bullet points.
-DO NOT include opinions, bias, or recommendations.
-ONLY factual bullet points.
+STRICT RULES:
+- Output ONLY plain text
+- One sentence per line
+- NO bullet symbols
+- NO numbering
+- NO markdown
+- NO JSON
+- NO headings
 
-TITLE:
-{article.get('title', '')}
+TASK:
+Write 3–5 short factual sentences summarizing the article.
 
-SUMMARY:
+ARTICLE:
 {summary_text}
 """
 
-    return run_llm(prompt)
+    raw = run_llm(prompt)
+
+    # 🔥 NORMALIZATION LAYER (THIS IS WHAT WAS MISSING)
+    lines = []
+    for line in raw.splitlines():
+        line = line.strip()
+
+        # remove any accidental bullets / dashes
+        line = line.lstrip("•-*–— ").strip()
+
+        if line:
+            lines.append(line)
+
+    return lines

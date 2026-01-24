@@ -1,12 +1,11 @@
 from intelligence.local_llm import run_llm
 
 
-def classify_bias(article: dict) -> tuple[str, str]:
-    summary_text = article.get("summary") or "No summary provided."
+def classify_bias(title: str, summary_points: list[str]) -> tuple[str, str]:
+    joined_summary = " ".join(summary_points)
 
     prompt = f"""
 You are a trading analyst.
-Respond in English only.
 
 Determine the SHORT-TERM market bias for the instrument.
 
@@ -16,10 +15,10 @@ Bias: <Bullish | Bearish | Neutral | Unclear>
 Reason: <one concise sentence>
 
 TITLE:
-{article.get('title', '')}
+{title}
 
 SUMMARY:
-{summary_text}
+{joined_summary}
 """
 
     output = run_llm(prompt)

@@ -2,7 +2,6 @@ import os
 import time
 import requests
 from alerts.telegram_commands import handle_message
-from alerts.markdown import escape_md
 
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
@@ -16,8 +15,8 @@ def send_message(text: str):
 
     payload = {
         "chat_id": CHAT_ID,
-        "text": escape_md(text),
-        "parse_mode": "MarkdownV2",
+        "parse_mode": "HTML",
+        "text": text,
         "disable_web_page_preview": True,
     }
 

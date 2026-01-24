@@ -54,8 +54,6 @@ def run_agent():
              # ---- News ingestion ----
             raw_articles = fetch_articles()
             articles = normalize_articles(raw_articles)
-            raw_articles = fetch_articles()
-            articles = normalize_articles(raw_articles)
             relevant = filter_relevant_articles(articles, instruments)
 
             new_relevant = []
@@ -77,13 +75,13 @@ def run_agent():
 
                 print("[DEBUG] Calling LLM...")
 
-                summary = summarize_article(article)
-                bias, reason = classify_bias(article)
+                summary = summarize_article(article)  # ← list[str]
+                bias, reason = classify_bias(article["title"], summary)
 
                 message = format_alert(
                     symbol=item["symbol"],
                     title=article["title"],
-                    summary=summary,
+                    summary=summary,          # ← pass list, NOT string
                     bias=bias,
                     reason=reason,
                     source=article["source"],
@@ -91,7 +89,6 @@ def run_agent():
                 )
 
                 send_message(message)
-
 
         except Exception as e:
             send_message(f"⚠️ Ticker Pulse error: {e}")

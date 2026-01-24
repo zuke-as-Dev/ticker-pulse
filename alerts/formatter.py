@@ -1,46 +1,28 @@
-import re
-
-def escape_md(text: str) -> str:
-    return re.sub(r'([_*\[\]()~`>#+\-=|{}.!])', r'\\\1', text)
-
 def bias_emoji(bias: str) -> str:
     bias = bias.lower()
 
     if bias == "bullish":
-        return "🟢📈"
+        return "🟢📈 Bullish"
     if bias == "bearish":
-        return "🔴📉"
+        return "🔴📉 Bearish"
     if bias == "neutral":
-        return "⚪️➖"
+        return "⚪️➖ Neutral"
 
-    return "🟡❓"
+    return "🟡❓ Unclear"
 
-from alerts.formatter import escape_md
 
-def format_alert(
-    symbol: str,
-    title: str,
-    summary: str,
-    bias: str,
-    reason: str,
-    source: str,
-    link: str,
-) -> str:
-    summary_lines = [
-        f"• {escape_md(line.strip('- ').strip())}"
-        for line in summary.splitlines()
-        if line.strip()
-    ]
-
-    summary_block = "\n".join(summary_lines)
+def format_alert(symbol, title, summary, bias, reason, source, link):
+    summary_block = "\n".join(f"• {line}" for line in summary)
 
     return (
-        "📢 *Ticker Pulse Alert*\n\n"
-        f"*Instrument:* {escape_md(symbol)}\n"
-        f"*Source:* {escape_md(source)}\n\n"
-        f"*Headline:*\n*{escape_md(title)}*\n\n"
-        f"*Summary:*\n{summary_block}\n\n"
-        f"*Bias:* {bias_emoji(bias)} {escape_md(bias)}\n"        
-        f"*Reason:* {escape_md(reason)}\n\n"
-        f"🔗 [Read more]({escape_md(link)})"
+        "📢 <b>Ticker Pulse Alert</b>\n\n"
+        f"<b>Instrument:</b> {symbol}\n"
+        f"<b>Source:</b> {source}\n\n"
+        "<b>Headline:</b>\n"
+        f"<b>{title}</b>\n\n"
+        "<b>Summary:</b>\n"
+        f"{summary_block}\n\n"
+        f"<b>Bias:</b> {bias_emoji(bias)}\n"
+        f"<b>Reason:</b> {reason}\n\n"
+        f"🔗 <a href=\"{link}\">Read more</a>"
     )

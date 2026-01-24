@@ -1,18 +1,4 @@
 # Instruments tracked by Ticker Pulse
-
-RELIANCE:
-  type: stock
-  name: Reliance Industries
-  primary_keywords:
-    - Reliance
-    - RIL
-    - Jio
-  secondary_keywords:
-    - telecom
-    - retail
-    - energy
-    - AI
-    - digital
 XAUUSD:
   type: commodity
   name: Gold
@@ -34,15 +20,3 @@ BTCUSD:
   secondary_keywords:
     - blockchain
     - digital currency  
-
-HDFC:
-  type: stock
-  name: HDFC Bank
-  primary_keywords:
-    - HDFC
-    - HDFC Bank
-    - banking
-  secondary_keywords:
-    - finance
-    - loans
-    - credit cards
