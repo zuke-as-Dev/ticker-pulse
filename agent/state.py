@@ -14,3 +14,22 @@ def load_instruments() -> dict:
         instruments = yaml.safe_load(f)
 
     return instruments
+
+def build_keyword_map(instruments: dict) -> dict:
+    keyword_map = {}
+
+    for symbol, meta in instruments.items():
+        terms = set()
+
+        terms.add(symbol.lower())
+        terms.add(meta.get("name", "").lower())
+
+        for t in meta.get("primary_terms", []):
+            terms.add(t.lower())
+
+        for t in meta.get("secondary_terms", []):
+            terms.add(t.lower())
+
+        keyword_map[symbol] = [t for t in terms if t]
+
+    return keyword_map

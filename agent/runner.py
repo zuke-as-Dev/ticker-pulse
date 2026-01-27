@@ -18,6 +18,11 @@ from agent.memory import clear_memory
 from alerts.formatter import format_alert
 import threading
 from alerts.telegram_bot import poll_messages
+from ingestion.article_fetcher import fetch_full_article
+from agent.state import build_keyword_map
+from ingestion.source_ranker import get_source_weight
+from ingestion.deduplicator import story_hash
+
 
 # Debug: print LLM config on startup
 print("🧠 LLM CONFIG")
@@ -36,6 +41,7 @@ def run_agent():
     threading.Thread(target=poll_messages, daemon=True).start()
     instruments = load_instruments()
     instrument_list = ", ".join(instruments.keys())
+    keyword_map = build_keyword_map(instruments)
 
     send_message(
     f"🟢 Ticker Pulse started\n"
@@ -52,27 +58,57 @@ def run_agent():
             send_message("⏱️ Ticker Pulse heartbeat — agent running")
 
              # ---- News ingestion ----
-            raw_articles = fetch_articles()
+            raw_articles = fetch_articles(keyword_map)
+            print(f"Fetched {len(raw_articles)} articles")
             articles = normalize_articles(raw_articles)
             relevant = filter_relevant_articles(articles, instruments)
 
-            new_relevant = []
+            # Debug: print relevant articles count
+            # new_relevant = []
+
+            # for item in relevant:
+            #     article = item["article"]
+            #     if is_new_article(article["title"], article["source"]):
+            #         new_relevant.append(item)
+            # print(f"Relevant new articles: {len(new_relevant)}")
+
+            # Debug: print relevance breakdown
+            per_symbol_count = {}
+            for item in relevant:
+                sym = item["symbol"]
+                per_symbol_count[sym] = per_symbol_count.get(sym, 0) + 1
+
+            print("\n[RELEVANCE BREAKDOWN]")
+            for sym, count in per_symbol_count.items():
+                print(f"{sym} : {count}")
+            print("-" * 40)
+
+            # ---- Deduplication based on source weight ----
+            deduped = {}
 
             for item in relevant:
                 article = item["article"]
-                if is_new_article(article["title"], article["source"]):
-                    new_relevant.append(item)
-            print(f"Relevant new articles: {len(new_relevant)}")
-            
-            # Debug: print relevant new articles
-            # for item in new_relevant:
-            #     print(
-            #         f"[RELEVANT] {item['symbol']} ← {item['article']['title']}"
-            #     ) 
+                h = story_hash(article["title"])
+                weight = get_source_weight(article["link"])
 
-            for item in new_relevant:
+                if h not in deduped or weight > deduped[h]["weight"]:
+                    deduped[h] = {
+                        "item": item,
+                        "weight": weight
+                    }
+
+            final_items = [v["item"] for v in deduped.values()]
+
+            print(f"Deduplicated articles sent: {len(final_items)}")
+
+            for item in final_items:
                 article = item["article"]
 
+                # Fetch full article text
+                full_text = fetch_full_article(article["link"])
+                article["content"] = full_text or article["summary"]
+                # Debug: log enrichment
+                print(f"[ENRICH] {item['symbol']} ← {len(article['content'])} chars")
                 print("[DEBUG] Calling LLM...")
 
                 summary = summarize_article(article)  # ← list[str]

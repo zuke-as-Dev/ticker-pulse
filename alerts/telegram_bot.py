@@ -17,7 +17,7 @@ def send_message(text: str):
         "chat_id": CHAT_ID,
         "parse_mode": "HTML",
         "text": text,
-        "disable_web_page_preview": True,
+        #"disable_web_page_preview": True,
     }
 
     response = requests.post(f"{API_URL}/sendMessage", json=payload)

@@ -1,0 +1,13 @@
+high:
+  - reuters.com
+  - bloomberg.com
+  - wsj.com
+
+medium:
+  - cointelegraph.com
+  - theblock.co
+  - decrypt.co
+
+low:
+  - newsbtc.com
+  - blogs

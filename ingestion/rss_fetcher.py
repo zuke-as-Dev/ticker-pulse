@@ -4,13 +4,10 @@ import yaml
 from urllib.parse import urlparse
 import socket
 
-# Set a global timeout for socket operations (e.g., RSS fetching)
-socket.setdefaulttimeout(10)  # ⏱️ hard timeout for RSS fetch
+# ⏱️ Hard timeout for RSS fetch
+socket.setdefaulttimeout(10)
 
-
-# Debug: confirm module loaded
 print("✅ rss_fetcher.py LOADED FROM:", __file__)
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,17 +49,12 @@ def load_rss_directory_feeds() -> dict:
     return feeds
 
 
-
 def load_all_feeds() -> dict:
     feeds = {}
 
-    legacy = load_legacy_feeds()
+    feeds.update(load_legacy_feeds())
+
     rss_dir_feeds = load_rss_directory_feeds()
-
-    # Merge legacy feeds first
-    feeds.update(legacy)
-
-    # Add / override with rss directory feeds
     for category, feed_list in rss_dir_feeds.items():
         feeds.setdefault(category, [])
         feeds[category].extend(feed_list)
@@ -70,40 +62,58 @@ def load_all_feeds() -> dict:
     return feeds
 
 
-def fetch_articles() -> list:
+def fetch_articles(keyword_map: dict | None = None) -> list:
+    """
+    Fetch RSS articles and optionally pre-filter them
+    using instrument keyword map.
+    """
 
     feeds = load_all_feeds()
     articles = []
     feed_stats = {}
-    
+
     for category, feed_list in feeds.items():
         for feed in feed_list:
-            
-            # Debug: log feed being processed
             print(f"[RSS FETCH] {feed['name']}")
 
-
-            # Validation
             if not isinstance(feed["url"], str):
-                raise TypeError(f"Feed URL is not a string: {feed['url']}")
-
+                print(f"[RSS ERROR] Invalid URL type → {feed['url']}")
+                continue
 
             try:
                 parsed = feedparser.parse(feed["url"])
             except Exception as e:
-                 print(f"[RSS ERROR] {feed['name']} → {e}")
-                 continue
+                print(f"[RSS ERROR] {feed['name']} → {e}")
+                continue
+
             count = 0
 
             for entry in parsed.entries:
+                title = entry.get("title", "").strip()
+                summary = entry.get("summary", "").strip()
+
+                # 🔍 Keyword pre-filter
+                if keyword_map:
+                    text_blob = f"{title} {summary}".lower()
+                    matched = False
+
+                    for terms in keyword_map.values():
+                        if any(term in text_blob for term in terms):
+                            matched = True
+                            break
+
+                    if not matched:
+                        continue
+
                 articles.append({
-                    "title": entry.get("title", "").strip(),
-                    "summary": entry.get("summary", "").strip(),
+                    "title": title,
+                    "summary": summary,
                     "link": entry.get("link", ""),
                     "published": entry.get("published", ""),
                     "source": feed["name"],
                     "category": category,
                 })
+
                 count += 1
 
             feed_stats[feed["name"]] = count

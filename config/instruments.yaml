@@ -20,3 +20,37 @@ BTCUSD:
   secondary_keywords:
     - blockchain
     - digital currency  
+WIPRO:
+  type: stock
+  name: Wipro Limited
+  primary_keywords:
+    - Wipro
+    - WIT
+    - IT services
+  secondary_keywords:
+    - technology
+    - outsourcing
+    - software development
+TCS:
+  type: stock
+  name: Tata Consultancy Services Limited
+  primary_keywords:
+    - TCS
+    - Tata Consultancy Services
+    - IT services
+  secondary_keywords:
+    - technology
+    - outsourcing
+    - software development 
+
+RELIANCE:
+  type: stock
+  name: Reliance Industries Limited
+  primary_keywords:
+    - Reliance
+    - RIL
+    - conglomerate
+  secondary_keywords:
+    - energy
+    - petrochemicals
+    - telecommunications  
